@@ -1,1 +1,1 @@
-# Fantasy-Snake
+# Snake-Fantasy
