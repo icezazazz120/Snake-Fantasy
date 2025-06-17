@@ -7,6 +7,10 @@ public class Playercontroller : MonoBehaviour
     private Tilemap groundTilemap;
     [SerializeField]
     private Tilemap collisionTilemap;
+    [SerializeField]
+    private Tilemap[] herosTilemap;
+    [SerializeField]
+    private Tilemap monstersTilemap;
     private PlayerMovement controls;
 
     private void Awake()
@@ -40,7 +44,7 @@ public class Playercontroller : MonoBehaviour
     private bool CanMove(Vector2 direction)
     {
         Vector3Int gridPosition = groundTilemap.WorldToCell(transform.position+(Vector3)direction);
-        if(!groundTilemap.HasTile(gridPosition) || collisionTilemap.HasTile(gridPosition)) 
+        if(!groundTilemap.HasTile(gridPosition) || collisionTilemap.HasTile(gridPosition) || herosTilemap[0].HasTile(gridPosition) || monstersTilemap.HasTile(gridPosition))
         {
             return false;
         }

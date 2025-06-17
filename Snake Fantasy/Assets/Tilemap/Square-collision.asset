@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Square-collision
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 7482667652216324306, guid: c79c00e55a374cc429977663b697d9e0, type: 3}
-  m_Color: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 1}
+  m_Color: {r: 0.2735849, g: 0.14840691, b: 0.14840691, a: 1}
   m_Transform:
     e00: 1
     e01: 0
