@@ -443,6 +443,7 @@
 "Assets/Script/Player Movement.cs"
 "Assets/Script/Playercontroller.cs"
 "Assets/Script/Spawn.cs"
+"Assets/Script/Stat.cs"
 -langversion:9.0
 /deterministic
 /optimize+
