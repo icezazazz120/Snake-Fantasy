@@ -14,30 +14,32 @@ public class Playercontroller : MonoBehaviour
     [SerializeField]
     private Tilemap monstersTilemap;
     private string currentDirection;
-    //private PlayerMovement controls;
+    private PlayerMovement controls;
+    Vector2 inputMovement;
+    private void Awake()
+    {
+        controls = new PlayerMovement();
+    }
 
-    //private void Awake()
-    //{
-    //    controls = new PlayerMovement();
-    //}
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
 
-    //private void OnEnable()
-    //{
-    //    controls.Enable();
-    //}
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
 
-    //private void OnDisable()
-    //{
-    //    controls.Disable();
-    //}
-
-    //private void Start()
-    //{
-    //    controls.Main.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
-    //}
-    private void Update()
+    private void Start()
+    {
+        //    controls.Main.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+        controls.Main.Movement.performed += ctx => inputMovement = ctx.ReadValue<Vector2>();
+    }
+private void Update()
     {
         directionKey();
+        Debug.Log(inputMovement);
     }
 
     private void Move(Vector2 direction)
@@ -62,29 +64,33 @@ public class Playercontroller : MonoBehaviour
     private void directionKey()
     {
         Vector2 direction;
-        if (Input.GetKeyDown(KeyCode.W) && currentDirection != "s")
+        if ((Input.GetKeyDown(KeyCode.W) || inputMovement.y == 1) && currentDirection != "s")
         {
             direction = Vector3.up;
             currentDirection = "w";
+            inputMovement.y = 0;
             Move(direction);
         }
-        else if (Input.GetKeyDown(KeyCode.S) && currentDirection != "w")
+        else if ((Input.GetKeyDown(KeyCode.S) || inputMovement.y == -1) && currentDirection != "w")
         {
             direction = Vector3.down;
             currentDirection = "s";
+            inputMovement.y = 0;
             Move(direction);
             Debug.Log(direction);
         }
-        else if (Input.GetKeyDown(KeyCode.A) && currentDirection != "d")
+        else if ((Input.GetKeyDown(KeyCode.A) || inputMovement.x == -1) && currentDirection != "d")
         {
             direction = Vector3.left;
             currentDirection = "a";
+            inputMovement.x = 0;
             Move(direction);
         }
-        else if (Input.GetKeyDown(KeyCode.D) && currentDirection != "a")
+        else if ((Input.GetKeyDown(KeyCode.D) || inputMovement.x == 1) && currentDirection != "a")
         {
             direction = Vector3.right;
             currentDirection = "d";
+            inputMovement.x = 0;
             Move(direction);
         }
     }
