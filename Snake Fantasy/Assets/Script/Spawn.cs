@@ -74,7 +74,7 @@ public class Spawn : MonoBehaviour
     {
         float randomChoice = Random.value;
 
-        if(randomChoice <= monsterChance)
+        if (randomChoice <= monsterChance)
         {
             return ObjectType.Monsters;
         }
@@ -129,6 +129,12 @@ public class Spawn : MonoBehaviour
 
             if(objectType != ObjectType.Monsters)
             {
+                HeroPickup pickup = gameObject.GetComponent<HeroPickup>();
+                if (pickup == null)
+                {
+                    pickup = gameObject.AddComponent<HeroPickup>();
+                }
+                pickup.prefabIndex  = (int)objectType + 1;
                 StartCoroutine(DestoryObjectAfterTime(gameObject, heroLifeTime));
             }
         }

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Hierarchy
   m_RootView: {fileID: 4}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -467,7 +467,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 24d2ffff36d2ffffb2d4ffff0cfbffff
+      m_ExpandedIDs: 0cfbfffff4ffffffcaae0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -539,7 +539,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Script
+    - Assets/Character
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -549,15 +549,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 86
   m_LastFolders:
-  - Assets/Script
+  - Assets/Character
   m_LastFoldersGridSize: 86
   m_LastProjectPath: D:\git\Snake-Fantasy\Snake Fantasy
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e4b10000
-    m_LastClickedID: 45540
+    m_SelectedIDs: e0b10000
+    m_LastClickedID: 45536
     m_ExpandedIDs: 00000000e2af0000e4af000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1364,9 +1364,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -0.4153377, y: 0.03400385, z: 0.00080746086}
+    m_Target: {x: -2.16306, y: -0.3967592, z: -0.017333789}
     speed: 2
-    m_Value: {x: -0.4153377, y: 0.03400385, z: 0.00080746086}
+    m_Value: {x: -2.16306, y: -0.3967592, z: -0.017333789}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1416,9 +1416,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 9.919247
+    m_Target: 11.733361
     speed: 2
-    m_Value: 9.919247
+    m_Value: 11.733361
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1920,7 +1920,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 44742
+  m_LastSelectedObjectID: 44746
 --- !u!114 &25
 MonoBehaviour:
   m_ObjectHideFlags: 52

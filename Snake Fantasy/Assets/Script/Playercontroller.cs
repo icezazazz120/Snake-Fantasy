@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Playercontroller : MonoBehaviour
 {
@@ -13,9 +14,16 @@ public class Playercontroller : MonoBehaviour
     private Tilemap[] herosTilemap;
     [SerializeField]
     private Tilemap monstersTilemap;
+
     private string currentDirection;
     private PlayerMovement controls;
     Vector2 inputMovement;
+
+    public GameObject[] heroPrefabs;
+
+    private List<Transform> heroLine = new List<Transform>();
+    private List<Vector3> previousPositions = new List<Vector3>();
+
     private void Awake()
     {
         controls = new PlayerMovement();
@@ -33,21 +41,52 @@ public class Playercontroller : MonoBehaviour
 
     private void Start()
     {
-        //    controls.Main.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
         controls.Main.Movement.performed += ctx => inputMovement = ctx.ReadValue<Vector2>();
+        GameObject firstHero = Instantiate(heroPrefabs[0], transform.position, Quaternion.identity);
+        heroLine.Add(firstHero.transform);
+        previousPositions.Add(transform.position); 
+        previousPositions.Add(transform.position);
     }
-private void Update()
+
+    private void Update()
     {
         directionKey();
-        Debug.Log(inputMovement);
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Hero"));
+        if (hit != null)
+        {
+            Debug.Log("hit");
+            HeroPickup pickup = hit.GetComponent<HeroPickup>();
+            if (pickup != null)
+            {
+                AddHero(pickup.prefabIndex);
+            }
+            Destroy(hit.gameObject);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+
     }
 
     private void Move(Vector2 direction)
     {
-        //Debug.Log(direction);
         if (CanMove(direction))
         {
-            transform.position += (Vector3)direction;
+            Vector3 currentHeadPos = transform.position;
+            Vector3 nextPos = currentHeadPos + (Vector3)direction;
+
+            previousPositions.Insert(0, currentHeadPos);
+            if (previousPositions.Count > heroLine.Count)
+                previousPositions.RemoveAt(previousPositions.Count - 1);
+
+            transform.position = nextPos;
+
+            for(int i = 0; i < heroLine.Count; i++)
+            {
+                heroLine[i].position = previousPositions[i];
+            }
+
         }
     }
 
@@ -77,7 +116,6 @@ private void Update()
             currentDirection = "s";
             inputMovement.y = 0;
             Move(direction);
-            Debug.Log(direction);
         }
         else if ((Input.GetKeyDown(KeyCode.A) || inputMovement.x == -1) && currentDirection != "d")
         {
@@ -93,5 +131,19 @@ private void Update()
             inputMovement.x = 0;
             Move(direction);
         }
+
+    }
+
+    public void AddHero(int prefabIndex)
+    {
+        Debug.Log("AddHero called with prefabIndex: " + prefabIndex);
+        if (prefabIndex < 0 || prefabIndex >= heroPrefabs.Length) return;
+        Vector3 spawnPos = heroLine[heroLine.Count - 1].position;
+        GameObject newHero = Instantiate(heroPrefabs[prefabIndex], spawnPos, Quaternion.identity);
+        Debug.Log("Instantiated new hero at: " + spawnPos);
+        heroLine.Add(newHero.transform);
+
+        previousPositions.Add(spawnPos);
+        Debug.Log("Hero added to line. Total heroes: " + heroLine.Count);
     }
 }
