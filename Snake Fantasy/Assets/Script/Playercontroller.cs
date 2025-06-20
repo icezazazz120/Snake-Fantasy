@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class Playercontroller : MonoBehaviour
@@ -23,6 +24,13 @@ public class Playercontroller : MonoBehaviour
 
     private List<Transform> heroLine = new List<Transform>();
     private List<Vector3> previousPositions = new List<Vector3>();
+    private List<Transform> heroInLine = new List<Transform>();
+    [SerializeField]
+    private Text text;
+    [SerializeField]
+    private GameObject button;
+
+    private bool isLose = false;
 
     private void Awake()
     {
@@ -45,23 +53,15 @@ public class Playercontroller : MonoBehaviour
         GameObject firstHero = Instantiate(heroPrefabs[0], transform.position, Quaternion.identity);
         heroLine.Add(firstHero.transform);
         previousPositions.Add(transform.position); 
-        previousPositions.Add(transform.position);
     }
 
     private void Update()
     {
-        directionKey();
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Hero"));
-        if (hit != null)
+        if(!isLose)
         {
-            Debug.Log("hit");
-            HeroPickup pickup = hit.GetComponent<HeroPickup>();
-            if (pickup != null)
-            {
-                AddHero(pickup.prefabIndex);
-            }
-            Destroy(hit.gameObject);
+            directionKey();
         }
+        CheckCollision();
     }
 
     private void FixedUpdate()
@@ -136,14 +136,38 @@ public class Playercontroller : MonoBehaviour
 
     public void AddHero(int prefabIndex)
     {
-        Debug.Log("AddHero called with prefabIndex: " + prefabIndex);
         if (prefabIndex < 0 || prefabIndex >= heroPrefabs.Length) return;
         Vector3 spawnPos = heroLine[heroLine.Count - 1].position;
         GameObject newHero = Instantiate(heroPrefabs[prefabIndex], spawnPos, Quaternion.identity);
-        Debug.Log("Instantiated new hero at: " + spawnPos);
-        heroLine.Add(newHero.transform);
+        newHero.tag = "HeroInLine";
+        newHero.layer = 7;
 
+        heroLine.Add(newHero.transform);
         previousPositions.Add(spawnPos);
-        Debug.Log("Hero added to line. Total heroes: " + heroLine.Count);
+    }
+
+    public void CheckCollision()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Hero"));
+        if (hit != null)
+        {
+            Debug.Log("hit");
+            HeroPickup pickup = hit.GetComponent<HeroPickup>();
+            if (pickup != null)
+            {
+                AddHero(pickup.prefabIndex);
+            }
+            Destroy(hit.gameObject);
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("HeroInLine"))
+        {
+            isLose = true;
+            button.gameObject.SetActive(true);
+            text.text = "Game Over";
+            Debug.Log("hitheroinline");
+        }
     }
 }
