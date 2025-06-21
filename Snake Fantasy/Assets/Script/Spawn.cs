@@ -15,16 +15,11 @@ public class Spawn : MonoBehaviour
 
     public GameObject[] objectprefab;
 
-    //[SerializeField]
-    //private GameObject Hero;
-    //[SerializeField]
-    //private GameObject Monster;
-
     public float hero1Chance = 0.2f;
     public float hero2Chance = 0.2f;
     public float hero3Chance = 0.2f;
     public float hero4Chance = 0.2f;
-    public float monsterChance = 0.2f;
+    //public float monsterChance = 0.2f;
     public int maxObject = 5;
     public float spawnInterval = 0.5f;
     public float heroLifeTime = 10f;
@@ -74,11 +69,8 @@ public class Spawn : MonoBehaviour
     {
         float randomChoice = Random.value;
 
-        if (randomChoice <= monsterChance)
-        {
-            return ObjectType.Monsters;
-        }
-        else if (randomChoice <= hero1Chance)
+
+        if (randomChoice <= hero1Chance)
         {
             return ObjectType.Hero1;
         }

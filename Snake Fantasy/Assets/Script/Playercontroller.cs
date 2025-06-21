@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Principal;
 using UnityEngine;
@@ -24,13 +25,29 @@ public class Playercontroller : MonoBehaviour
 
     private List<Transform> heroLine = new List<Transform>();
     private List<Vector3> previousPositions = new List<Vector3>();
-    private List<Transform> heroInLine = new List<Transform>();
     [SerializeField]
     private Text text;
     [SerializeField]
+    private Text statText;
+    [SerializeField]
+    private Text enemyText;
+    [SerializeField]
     private GameObject button;
 
-    private bool isLose = false;
+    private bool isControl = false;
+    private bool isBattle = false;
+    private bool canAttack = true;
+
+    private GameObject currentEnemy;
+    private float HeadHealth;
+    private float HeadAttack;
+    private float HeadDefense;
+
+    private float EnemyHealth;
+    private float EnemyAttack;
+    private float EnemyDefense;
+
+    private float CurrentHealth;
 
     private void Awake()
     {
@@ -52,16 +69,28 @@ public class Playercontroller : MonoBehaviour
         controls.Main.Movement.performed += ctx => inputMovement = ctx.ReadValue<Vector2>();
         GameObject firstHero = Instantiate(heroPrefabs[0], transform.position, Quaternion.identity);
         heroLine.Add(firstHero.transform);
-        previousPositions.Add(transform.position); 
+        previousPositions.Add(transform.position);
+        HeroPickup headStats = firstHero.GetComponent<HeroPickup>();
+        if (headStats != null)
+        {
+            HeadHealth = headStats.Health;
+            HeadAttack = headStats.Attack;
+            HeadDefense = headStats.Defense;
+            CurrentHealth = HeadHealth;
+        }
     }
 
     private void Update()
     {
-        if(!isLose)
+        if (!isControl)
         {
             directionKey();
         }
         CheckCollision();
+        if (isBattle && canAttack && (Input.anyKeyDown || inputMovement != Vector2.zero))
+        {
+            Battle();
+        }
     }
 
     private void FixedUpdate()
@@ -82,9 +111,12 @@ public class Playercontroller : MonoBehaviour
 
             transform.position = nextPos;
 
-            for(int i = 0; i < heroLine.Count; i++)
+            for (int i = 0; i < heroLine.Count; i++)
             {
-                heroLine[i].position = previousPositions[i];
+                if (i < previousPositions.Count)
+                {
+                    heroLine[i].position = previousPositions[i];
+                }
             }
 
         }
@@ -92,7 +124,7 @@ public class Playercontroller : MonoBehaviour
 
     private bool CanMove(Vector2 direction)
     {
-        Vector3Int gridPosition = groundTilemap.WorldToCell(transform.position+(Vector3)direction);
+        Vector3Int gridPosition = groundTilemap.WorldToCell(transform.position + (Vector3)direction);
         if (!groundTilemap.HasTile(gridPosition) || collisionTilemap.HasTile(gridPosition))
         {
             return false;
@@ -148,26 +180,130 @@ public class Playercontroller : MonoBehaviour
 
     public void CheckCollision()
     {
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Hero"));
-        if (hit != null)
+        Collider2D hitHero = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Hero"));
+        Collider2D hitEnemy = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Monster"));
+        if (hitHero != null)
         {
-            Debug.Log("hit");
-            HeroPickup pickup = hit.GetComponent<HeroPickup>();
-            if (pickup != null)
+            HeroPickup pickup = hitHero.GetComponent<HeroPickup>();
+            HeroPickup headStats = heroLine[0].GetComponent<HeroPickup>();
+            if (pickup != null && headStats != null)
             {
                 AddHero(pickup.prefabIndex);
+                HeadHealth = headStats.Health;
+                HeadAttack = headStats.Attack;
+                HeadDefense = headStats.Defense;
             }
-            Destroy(hit.gameObject);
+            Destroy(hitHero.gameObject);
+        }
+        if (hitEnemy != null && !isBattle)
+        {
+            Debug.Log("CheckCollision: found Monster");
+            HeroPickup Enemy = hitEnemy.GetComponent<HeroPickup>();
+            if (Enemy != null)
+            {
+                Debug.Log("2nd Monster detected: " + hitEnemy.name);
+                EnemyHealth = Enemy.Health;
+                EnemyAttack = Enemy.Attack;
+                EnemyDefense = Enemy.Defense;
+                
+                isBattle = true;
+                isControl = true;
+                currentEnemy = hitEnemy.gameObject;
+            }
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("HeroInLine"))
         {
-            isLose = true;
+            isControl = true;
             button.gameObject.SetActive(true);
             text.text = "Game Over";
             Debug.Log("hitheroinline");
         }
+    }
+    private void Battle()
+    {
+        Debug.Log("1");
+        canAttack = false;
+        float headDamage = Mathf.Max(0, HeadAttack - EnemyDefense);
+        float enemyDamage = Mathf.Max(0, EnemyAttack - HeadDefense);
+        CurrentHealth -= enemyDamage;
+        EnemyHealth -= headDamage;
+
+        text.text = $"You dealt {headDamage}!\nEnemy dealt {enemyDamage}!";
+        statText.text = $"HP: {CurrentHealth} | ATK: {HeadAttack} | DEF: {HeadDefense}";
+
+        if (CurrentHealth <= 0)
+        {
+            Vector3 oldHeadPosition = heroLine[0].position;
+            GameObject deadHero = heroLine[0].gameObject;
+            Destroy(deadHero);
+            heroLine.RemoveAt(0);
+            UpdateHeroLineAfterDeath(oldHeadPosition);
+            if (previousPositions.Count > 0)
+                previousPositions.RemoveAt(0);
+
+            if (heroLine.Count > 0)
+            {
+                CurrentHealth = HeadHealth;
+                HeroPickup newStats = heroLine[0].GetComponent<HeroPickup>();
+                HeadHealth = newStats.Health;
+                HeadAttack = newStats.Attack;
+                HeadDefense = newStats.Defense;
+                statText.text = $"HP: {CurrentHealth} | ATK: {HeadAttack} | DEF: {HeadDefense}";
+                enemyText.text = $"HP: {EnemyHealth} | ATK: {EnemyAttack} | DEF: {EnemyDefense}";
+            }
+            else
+            {
+                text.text = "Game Over!";
+                button.SetActive(true);
+                isBattle = false;
+                return;
+            }
+        }
+
+        if (EnemyHealth <= 0)
+        {
+            currentEnemy.layer = LayerMask.NameToLayer("Default");
+            Debug.Log("2");
+            Destroy(currentEnemy);
+            isBattle = false;
+            isControl = false;
+            canAttack = true;
+            text.text = "";
+            enemyText.text = "";
+            currentEnemy = null;
+            return;
+        }
+
+        StartCoroutine(WaitForNextTurn());
+
+    }
+    private IEnumerator WaitForNextTurn()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canAttack = true;
+    }
+    private void UpdateHeroLineAfterDeath(Vector3 oldHeadPosition)
+    {
+        List<Vector3> newPositions = new List<Vector3>();
+
+        newPositions.Add(oldHeadPosition);
+
+        for (int i = 1; i < heroLine.Count; i++)
+        {
+            if (i < previousPositions.Count)
+                newPositions.Add(previousPositions[i - 1]);
+            else
+                newPositions.Add(heroLine[i].position);
+        }
+
+        for (int i = 0; i < heroLine.Count; i++)
+        {
+            heroLine[i].position = newPositions[i];
+        }
+
+        previousPositions = new List<Vector3>(newPositions);
     }
 }

@@ -221,6 +221,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabIndex: 4
+  Health: 18
+  Attack: 5
+  Defense: 1
 --- !u!61 &8828070298965968891
 BoxCollider2D:
   m_ObjectHideFlags: 0
