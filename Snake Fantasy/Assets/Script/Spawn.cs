@@ -15,44 +15,50 @@ public class Spawn : MonoBehaviour
 
     public GameObject[] objectprefab;
 
-    public float hero1Chance = 0.2f;
+    public float hero1Chance = 0.1f;
     public float hero2Chance = 0.2f;
-    public float hero3Chance = 0.2f;
-    public float hero4Chance = 0.2f;
-    //public float monsterChance = 0.2f;
-    public int maxObject = 5;
-    public float spawnInterval = 0.5f;
+    public float hero3Chance = 0.3f;
+    public float hero4Chance = 0.4f;
+
+    public int maxHeros = 3;
+    public int maxMonsters = 5;
+    public float spawnInterval = 1f;
     public float heroLifeTime = 10f;
 
     private List<Vector3> goodSpawnPositions = new List<Vector3>();
-    private List<GameObject> spawnObjects = new List<GameObject>();
+    private List<GameObject> heroObjects = new List<GameObject>();
+    private List<GameObject> monsterObjects = new List<GameObject>();
     private bool isSpawning = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         GatherGoodPosition();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(!isSpawning && ActiveObjectCount() < maxObject)
+        if(!isSpawning && (ActiveHeroCount() < maxHeros || ActiveMonsterCount() < maxMonsters))
         {
             StartCoroutine(SpawnIfNeed());
         }
     }
 
-    private int ActiveObjectCount()
+    private int ActiveHeroCount()
     {
-        spawnObjects.RemoveAll(item => item == null);
-        return spawnObjects.Count;
+        heroObjects.RemoveAll(item => item == null);
+        return heroObjects.Count;
+    }
+
+    private int ActiveMonsterCount()
+    {
+        monsterObjects.RemoveAll(item => item == null);
+        return monsterObjects.Count;
     }
 
     private IEnumerator SpawnIfNeed()
     {
         isSpawning = true;
-        while(ActiveObjectCount() < maxObject)
+        while (ActiveHeroCount() < maxHeros || ActiveMonsterCount() < maxMonsters)
         {
             spawnObject();
             yield return new WaitForSeconds(spawnInterval);
@@ -62,7 +68,8 @@ public class Spawn : MonoBehaviour
 
     private bool PositionHasObject(Vector3 positionToCheck)
     {
-        return spawnObjects.Any(checkObj => checkObj && Vector3.Distance(checkObj.transform.position, positionToCheck) < 1.0f);
+        return heroObjects.Any(obj => obj && Vector3.Distance(obj.transform.position, positionToCheck) < 1.0f) || 
+               monsterObjects.Any(obj => obj && Vector3.Distance(obj.transform.position, positionToCheck) < 1.0f);
     }
 
     private ObjectType RandomObjectType()
@@ -70,26 +77,16 @@ public class Spawn : MonoBehaviour
         float randomChoice = Random.value;
 
 
-        if (randomChoice <= hero1Chance)
-        {
-            return ObjectType.Hero1;
-        }
-        else if (randomChoice <= (hero1Chance + hero2Chance))
-        {
-            return ObjectType.Hero2;
-        }
-        else if (randomChoice <= (hero1Chance + hero2Chance + hero3Chance))
-        {
-            return ObjectType.Hero3;
-        }
-        else if (randomChoice <= (hero1Chance + hero2Chance + hero3Chance + hero4Chance))
-        {
-            return ObjectType.Hero4;
-        }
-        else
-        {
-            return ObjectType.Monsters;
-        }
+        if (randomChoice <= hero1Chance) return ObjectType.Hero1;
+
+        else if (randomChoice <= hero2Chance) return ObjectType.Hero2;
+
+        else if (randomChoice <= hero3Chance) return ObjectType.Hero3;
+
+        else if (randomChoice <= hero4Chance) return ObjectType.Hero4;
+
+        else return ObjectType.Monsters;
+
     }
 
     private void spawnObject()
@@ -115,11 +112,14 @@ public class Spawn : MonoBehaviour
         }
         if(validPositionFound)
         {
-            ObjectType objectType = RandomObjectType();
+            ObjectType objectType = PickObjectTypeDueToLimits();
             GameObject gameObject = Instantiate(objectprefab[(int)objectType], spawnPosition, Quaternion.identity);
-            spawnObjects.Add(gameObject);
+            if (objectType == ObjectType.Monsters)
+                monsterObjects.Add(gameObject);
+            else
+                heroObjects.Add(gameObject);
 
-            if(objectType != ObjectType.Monsters)
+            if (objectType != ObjectType.Monsters)
             {
                 HeroPickup pickup = gameObject.GetComponent<HeroPickup>();
                 if (pickup == null)
@@ -138,7 +138,10 @@ public class Spawn : MonoBehaviour
 
         if(gameObject)
         {
-            spawnObjects.Remove(gameObject);
+            if (heroObjects.Contains(gameObject))
+                heroObjects.Remove(gameObject);
+            else if (monsterObjects.Contains(gameObject))
+                monsterObjects.Remove(gameObject);
             goodSpawnPositions.Add(gameObject.transform.position);
             Destroy(gameObject);
         }
@@ -164,6 +167,22 @@ public class Spawn : MonoBehaviour
             }
         }
     }
+    private ObjectType PickObjectTypeDueToLimits()
+    {
+        if (ActiveHeroCount() >= maxHeros && ActiveMonsterCount() < maxMonsters)
+            return ObjectType.Monsters;
 
-    
+        if (ActiveMonsterCount() >= maxMonsters && ActiveHeroCount() < maxHeros)
+        {
+            float totalHeroChance = hero1Chance + hero2Chance + hero3Chance + hero4Chance;
+            float randomChoice = Random.value * totalHeroChance;
+
+            if (randomChoice <= hero1Chance) return ObjectType.Hero1;
+            else if (randomChoice <= hero2Chance) return ObjectType.Hero2;
+            else if (randomChoice <= hero3Chance) return ObjectType.Hero3;
+            else return ObjectType.Hero4;
+        }
+
+        return RandomObjectType();
+    }
 }

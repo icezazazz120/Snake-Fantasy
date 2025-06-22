@@ -43,8 +43,8 @@ MonoBehaviour:
     y: 0
     width: 496
     height: 270
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 226}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 51
+  controlID: 25
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -325,8 +325,8 @@ MonoBehaviour:
     y: 640
     width: 1512
     height: 293
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 101, y: 126}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 23}
   m_Panes:
   - {fileID: 23}
@@ -353,8 +353,8 @@ MonoBehaviour:
     y: 0
     width: 408
     height: 933
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 76}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 26}
   m_Panes:
   - {fileID: 26}
@@ -556,9 +556,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 5ab20000
-    m_LastClickedID: 45658
-    m_ExpandedIDs: 000000005cb000005eb0000000ca9a3b
+    m_SelectedIDs: 6eb20000
+    m_LastClickedID: 45678
+    m_ExpandedIDs: 0000000070b0000072b0000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -587,7 +587,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000005cb000005eb00000
+    m_ExpandedIDs: 0000000070b0000072b00000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1364,9 +1364,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 0.5184054, y: 3.4806645, z: -0.03304866}
+    m_Target: {x: -0.3593052, y: 3.7678041, z: -0.039035864}
     speed: 2
-    m_Value: {x: 0.5184054, y: 3.4806645, z: -0.03304866}
+    m_Value: {x: -0.3593052, y: 3.7678041, z: -0.039035864}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1416,9 +1416,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 13.304824
+    m_Target: 13.903541
     speed: 2
-    m_Value: 13.304824
+    m_Value: 13.903541
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1920,7 +1920,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -76364
+  m_LastSelectedObjectID: 44770
 --- !u!114 &25
 MonoBehaviour:
   m_ObjectHideFlags: 52

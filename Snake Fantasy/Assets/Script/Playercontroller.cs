@@ -93,11 +93,6 @@ public class Playercontroller : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
     private void Move(Vector2 direction)
     {
         if (CanMove(direction))
@@ -197,11 +192,9 @@ public class Playercontroller : MonoBehaviour
         }
         if (hitEnemy != null && !isBattle)
         {
-            Debug.Log("CheckCollision: found Monster");
             HeroPickup Enemy = hitEnemy.GetComponent<HeroPickup>();
             if (Enemy != null)
             {
-                Debug.Log("2nd Monster detected: " + hitEnemy.name);
                 EnemyHealth = Enemy.Health;
                 EnemyAttack = Enemy.Attack;
                 EnemyDefense = Enemy.Defense;
@@ -219,20 +212,19 @@ public class Playercontroller : MonoBehaviour
             isControl = true;
             button.gameObject.SetActive(true);
             text.text = "Game Over";
-            Debug.Log("hitheroinline");
         }
     }
     private void Battle()
     {
-        Debug.Log("1");
         canAttack = false;
         float headDamage = Mathf.Max(0, HeadAttack - EnemyDefense);
         float enemyDamage = Mathf.Max(0, EnemyAttack - HeadDefense);
         CurrentHealth -= enemyDamage;
         EnemyHealth -= headDamage;
 
-        text.text = $"You dealt {headDamage}!\nEnemy dealt {enemyDamage}!";
-        statText.text = $"HP: {CurrentHealth} | ATK: {HeadAttack} | DEF: {HeadDefense}";
+        text.text = $"You dealt {headDamage} Damage!\nEnemy dealt {enemyDamage} Damage!";
+        statText.text = $"HP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
+        enemyText.text = $"HP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
 
         if (CurrentHealth <= 0)
         {
@@ -251,8 +243,8 @@ public class Playercontroller : MonoBehaviour
                 HeadHealth = newStats.Health;
                 HeadAttack = newStats.Attack;
                 HeadDefense = newStats.Defense;
-                statText.text = $"HP: {CurrentHealth} | ATK: {HeadAttack} | DEF: {HeadDefense}";
-                enemyText.text = $"HP: {EnemyHealth} | ATK: {EnemyAttack} | DEF: {EnemyDefense}";
+                statText.text = $"HP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
+                enemyText.text = $"HP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
             }
             else
             {
@@ -266,7 +258,6 @@ public class Playercontroller : MonoBehaviour
         if (EnemyHealth <= 0)
         {
             currentEnemy.layer = LayerMask.NameToLayer("Default");
-            Debug.Log("2");
             Destroy(currentEnemy);
             isBattle = false;
             isControl = false;

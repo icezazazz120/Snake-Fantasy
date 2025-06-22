@@ -18,13 +18,7 @@ public class PartyManager : MonoBehaviour
     }
 
     public List<Party> partyList = new List<Party>();
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         UpdatePartyList();
@@ -45,7 +39,7 @@ public class PartyManager : MonoBehaviour
         positionHistory.Enqueue(pos);
         if (positionHistory.Count > 50)
         {
-            positionHistory.Dequeue(); // keep size reasonable
+            positionHistory.Dequeue();
         }
     }
     public Vector3? GetDelayedPosition(int delay)
