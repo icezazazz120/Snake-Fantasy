@@ -77,6 +77,8 @@ public class Playercontroller : MonoBehaviour
             HeadAttack = headStats.Attack;
             HeadDefense = headStats.Defense;
             CurrentHealth = HeadHealth;
+            statText.text = $"Hero\nHP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
+            enemyText.text = $"Enemy\nHP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
         }
     }
 
@@ -223,8 +225,8 @@ public class Playercontroller : MonoBehaviour
         EnemyHealth -= headDamage;
 
         text.text = $"You dealt {headDamage} Damage!\nEnemy dealt {enemyDamage} Damage!";
-        statText.text = $"HP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
-        enemyText.text = $"HP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
+        statText.text = $"Hero\nHP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
+        enemyText.text = $"Enemy\nHP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
 
         if (CurrentHealth <= 0)
         {
@@ -243,8 +245,8 @@ public class Playercontroller : MonoBehaviour
                 HeadHealth = newStats.Health;
                 HeadAttack = newStats.Attack;
                 HeadDefense = newStats.Defense;
-                statText.text = $"HP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
-                enemyText.text = $"HP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
+                statText.text = $"Hero\nHP: {CurrentHealth} \nATK: {HeadAttack} \nDEF: {HeadDefense}";
+                enemyText.text = $"Enemy\nHP: {EnemyHealth} \nATK: {EnemyAttack} \nDEF: {EnemyDefense}";
             }
             else
             {
@@ -263,7 +265,7 @@ public class Playercontroller : MonoBehaviour
             isControl = false;
             canAttack = true;
             text.text = "";
-            enemyText.text = "";
+            enemyText.text = $"Enemy\nHP: 0 \nATK: 0 \nDEF: 0";
             currentEnemy = null;
             return;
         }
